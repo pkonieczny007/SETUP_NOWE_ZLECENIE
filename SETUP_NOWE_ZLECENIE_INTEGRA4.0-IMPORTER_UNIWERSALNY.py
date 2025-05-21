@@ -16,6 +16,7 @@ def download_and_extract(repo_url, target_folder):
             # Move contents to the target folder
             for item in os.listdir(extracted_folder):
                 shutil.move(os.path.join(extracted_folder, item), target_folder)
+            # Remove the temporary directory
             shutil.rmtree(temp_dir)
         print(f"Files have been downloaded from {repo_url} and moved to {target_folder}.")
     else:
@@ -29,27 +30,21 @@ order_folder_name = folder_prefix + order_number if order_number else folder_pre
 # Create the order folder if it doesn't exist yet
 os.makedirs(order_folder_name, exist_ok=True)
 
-# Define GitHub repository URLs
+# URLs to the GitHub repository archives
 integra_repo_url = "https://github.com/pkonieczny007/INTEGRA_ASSEMBLY/archive/refs/heads/main.zip"
 importer_repo_url = "https://github.com/pkonieczny007/IMPORTER_UNIWERSALNY/archive/refs/heads/main.zip"
-bm_repo_url = "https://github.com/pkonieczny007/INTEGRA_BM/archive/refs/heads/main.zip"
 
-# IMPORTERY folder
+# Downloading and extracting INTEGRA_ASSEMBLY files directly to the IMPORTERY subfolder
 importery_folder = os.path.join(order_folder_name, 'IMPORTERY')
 os.makedirs(importery_folder, exist_ok=True)
 download_and_extract(integra_repo_url, importery_folder)
 
-# BM_IMPORTERY folder
-bm_importery_folder = os.path.join(order_folder_name, 'BM_IMPORTERY')
-os.makedirs(bm_importery_folder, exist_ok=True)
-download_and_extract(bm_repo_url, bm_importery_folder)
-
-# Root folder
+# Downloading and extracting IMPORTER_UNIWERSALNY files directly to the order folder
 download_and_extract(importer_repo_url, order_folder_name)
 
-# Move the script itself to the setup subfolder
+# Move the setup file to the 'setup' subfolder in the newly created order folder
 setup_folder = os.path.join(order_folder_name, 'setup')
 os.makedirs(setup_folder, exist_ok=True)
-script_name = os.path.basename(__file__)
+script_name = os.path.basename(__file__)  # Retrieve the name of the current script
 shutil.move(script_name, os.path.join(setup_folder, script_name))
 print(f"The file {script_name} has been moved to {os.path.join(setup_folder, script_name)}.")
